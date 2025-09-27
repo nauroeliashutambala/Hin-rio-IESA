@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat com IA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .header {
+            background-color: #ff5722;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .header .back-arrow {
+            font-size: 24px;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .chat-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 20px;
+            word-wrap: break-word;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background-color: #fff;
+            color: #333;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.ia {
+            align-self: flex-start;
+            background-color: #e0e0e0;
+            color: #333;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message.ia span.sender {
+            font-weight: bold;
+            color: #ff5722;
+        }
+
+        .input-container {
+            display: flex;
+            padding: 10px;
+            background-color: #fff;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            border-top: 1px solid #ccc;
+        }
+
+        .input-container input {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 10px 15px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .input-container button {
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            margin-left: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .input-container button:hover {
+            background-color: #e64a19;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <span class="back-arrow">&#8592;</span>
+        <h1>IA Assistente</h1>
+    </div>
+
+    <div class="chat-container" id="chat-container">
+        </div>
+
+    <div class="input-container">
+        <input type="text" id="user-input" placeholder="Digite sua mensagem...">
+        <button id="send-btn">&#10148;</button>
+    </div>
+
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        // Função para adicionar uma mensagem ao chat
+        function addMessage(text, sender) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', sender);
+            
+            if (sender === 'ia') {
+                messageElement.innerHTML = `<span class="sender"></span> ${text}`;
+            } else {
+                messageElement.textContent = text;
+            }
+            
+            chatContainer.appendChild(messageElement);
+            chatContainer.scrollTop = chatContainer.scrollHeight; // Rola para o final
+        }
+
+        // Simula uma resposta da IA
+        function getIaResponse(message) {
+            const lowerCaseMessage = message.toLowerCase();
+            let response = "Desculpe, não entendi. Por favor, tente perguntar de outra forma.";
+
+            if (lowerCaseMessage.includes("olá") || lowerCaseMessage.includes("oi")) {
+                response = "Olá! Como posso ajudar você hoje?";
+            } else if (lowerCaseMessage.includes("como você está")) {
+                response = "Eu sou um programa, mas estou funcionando perfeitamente! Obrigado por perguntar.";
+            } else if (lowerCaseMessage.includes("o que você faz")) {
+                response = "Eu posso responder perguntas, ajudar com tarefas e simular conversas.";
+            }
+            
+            setTimeout(() => {
+                addMessage(response, 'ia');
+            }, 500); // Responde após meio segundo para simular o "pensamento" da IA
+        }
+
+        // Lida com o envio da mensagem
+        function handleSendMessage() {
+            const message = userInput.value.trim();
+            if (message !== "") {
+                addMessage(message, 'user');
+                getIaResponse(message);
+                userInput.value = ''; // Limpa o input
+            }
+        }
+
+        // Evento para o botão de enviar
+        sendBtn.addEventListener('click', handleSendMessage);
+
+        // Evento para a tecla 'Enter'
+        userInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                handleSendMessage();
+            }
+        });
+
+        // Mensagem de boas-vindas inicial
+        window.onload = () => {
+            addMessage("Olá! Sou um assistente de IA dedicada a Igreja da IESA, com a finalidade de exclarecimento de duvias, tradução de hinos e conversas religiosas. Como posso te ajudar?", 'ia');
+        };
+    </script>
+
+</body>
+</html>
